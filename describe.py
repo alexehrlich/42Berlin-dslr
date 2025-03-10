@@ -43,31 +43,30 @@ def upper_percentile(values):
     return median(sorted.iloc[(len(values) // 2):], True)
 
 def describe(df):
+    print(df)
     shorted_cols = {}
     for col in df.columns:
         if len(col) > 10:
             shorted_cols[col] = col[:11]
     df.rename(columns=shorted_cols, inplace=True)
 
-    header = "\t" + "".join(key.rjust(15) for key in df.columns)
-    print(header)
+    stat_measures = ['count', 'std', 'min', '25%', '50%', '75%', 'max']
 
-    counts = [count(df[col_name]) for col_name in df.columns]
-    means = [mean(df[col_name]) for col_name in df.columns]
-    stds = [std(df[col_name]) for col_name in df.columns]
-    mins = [extreme_values(df[col_name], lambda a, b: a < b) for col_name in df.columns]
-    lower_percentiles = [lower_percentile(df[col_name]) for col_name in df.columns]
-    medians = [median(df[col_name]) for col_name in df.columns]
-    upper_percentiles = [upper_percentile(df[col_name]) for col_name in df.columns]
-    maxes = [extreme_values(df[col_name], lambda a, b: a > b) for col_name in df.columns]
-    print("count\t" + "".join(f"{float(val):15.6f}" for val in counts))
-    print("count\t" + "".join(f"{float(val):15.6f}" for val in means))
-    print("count\t" + "".join(f"{float(val):15.6f}" for val in stds))
-    print("count\t" + "".join(f"{float(val):15.6f}" for val in mins))
-    print("count\t" + "".join(f"{float(val):15.6f}" for val in lower_percentiles))
-    print("count\t" + "".join(f"{float(val):15.6f}" for val in medians))
-    print("count\t" + "".join(f"{float(val):15.6f}" for val in upper_percentiles))
-    print("count\t" + "".join(f"{float(val):15.6f}" for val in maxes))
+    stats = pd.DataFrame(columns=df.columns, index=stat_measures)
+    stats.loc['count'] = [count(df[col_name]) for col_name in df.columns]
+    stats.loc['mean'] = [mean(df[col_name]) for col_name in df.columns]
+    stats.loc['std'] = [std(df[col_name]) for col_name in df.columns]
+    stats.loc['min'] = [extreme_values(df[col_name], lambda a, b: a < b) for col_name in df.columns]
+    stats.loc['25%'] = [lower_percentile(df[col_name]) for col_name in df.columns]
+    stats.loc['50%'] = [median(df[col_name]) for col_name in df.columns]
+    stats.loc['75%'] = [upper_percentile(df[col_name]) for col_name in df.columns]
+    stats.loc['max'] = [extreme_values(df[col_name], lambda a, b: a > b) for col_name in df.columns]
+
+    print("\t" + "".join(key.rjust(15) for key in df.columns))
+    for stat in stat_measures:
+        print(f"{stat}\t" + "".join(f"{float(val):15.6f}" for val in stats.loc[stat]))
+
+    return stats
 
 def main():
     if len(sys.argv) != 2:
