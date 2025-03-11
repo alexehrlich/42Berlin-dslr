@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys
+import os
 import matplotlib.pyplot as plt
 
 def mean(values):
@@ -151,7 +152,12 @@ def main():
     #ignore the target column: all rows and all colums starting from Best Hand
     stats = describe(df.loc[:, 'Best Hand':], should_print=True)
 
-    test_train_split(df, stats, True)
+    train, val = test_train_split(df, stats, False)
+
+    if not os.path.exists('datasets/splitted/'):
+        os.mkdir('datasets/splitted/')
+    train.to_csv('datasets/splitted/train.csv')
+    val.to_csv('datasets/splitted/val.csv')
 
 if __name__ == '__main__':
     main()
