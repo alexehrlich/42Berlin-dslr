@@ -122,7 +122,7 @@ def test_train_split(df, stats, show_hist=False):
     return train, val
 
 def normalize(df, stats):
-    courses = df.columns[1:]
+    courses = df.columns[2:]
     normalized_df = df.copy()
     for course in courses:
         normalized_df.loc[:, course] = (normalized_df.loc[:, course] - stats.loc['mean', course]) / stats.loc['std', course]
@@ -147,13 +147,14 @@ def main():
 
     #ignore the target column: all rows and all colums starting from Best Hand
     stats = describe(df.loc[:, 'Best Hand':], should_print=True)
-    normalized_df = normalize(df.loc[:, 'Best Hand':], stats)
-    normalized_stats = describe(normalized_df, should_print=True)
+    normalized_df = normalize(df, stats)
+    normalized_stats = describe(normalized_df.loc[:, 'Best Hand':], should_print=True)
 
     train, val = test_train_split(df, stats, False)
 
     if not os.path.exists('datasets/splitted/'):
         os.mkdir('datasets/splitted/')
+    normalized_df.to_csv('datasets/normalized.csv')
     train.to_csv('datasets/splitted/train.csv')
     val.to_csv('datasets/splitted/val.csv')
     stats.to_csv('stats.csv')

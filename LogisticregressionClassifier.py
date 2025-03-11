@@ -8,7 +8,7 @@ class LogisticregressionClassifier:
 	def __init__(self):
 		self.weights = None
 
-	def fit(self, X, y, epochs=50, alpha=0.001):
+	def fit(self, X_train, X_val, y_train, y_val, epochs=50, alpha=0.001):
 		np.random.seed(4)
 		self.weights = np.random.randn(4, X.shape[1])
 

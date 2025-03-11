@@ -3,9 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def main():
-	df = pd.read_csv('./datasets/dataset_train.csv')
-	df = df.dropna()
-	course_df = df.loc[:, 'Arithmancy':]
+	df = pd.read_csv('./datasets/normalized.csv')
+	course_df = df.loc[:, 'Best Hand':]
 	house = df.loc[:, 'Hogwarts House']
 	houses_colors = {
 		'Ravenclaw': 'red',
@@ -13,10 +12,6 @@ def main():
 		'Gryffindor': 'green',
 		'Hufflepuff': 'orange'
 	}
-
-	stats = describe(course_df)
-	for course in stats.columns:
-		course_df.loc[:, course] = (course_df.loc[:, course] - stats.loc['mean', course]) / stats.loc['std', course]
 
 	grouped = course_df.groupby(house)
 
