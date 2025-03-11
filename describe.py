@@ -51,7 +51,7 @@ def describe(df, should_print=False):
         else:
             shorted_cols[col] = col
 
-    stat_measures = ['count', 'std', 'min', '25%', '50%', '75%', 'max']
+    stat_measures = ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']
 
     stats = pd.DataFrame(columns=df.columns, index=stat_measures)
     stats.loc['count'] = [count(df[col_name]) for col_name in df.columns]
@@ -70,22 +70,11 @@ def describe(df, should_print=False):
 
     return stats
 
-import matplotlib.pyplot as plt
-
 def test_train_split(df, stats, show_hist=False):
-    """
-    Normalize the data with Z-score and save it to separate CSV
-    for later usage.
-    """
-    courses = df.columns[2:]
-    normalized_df = df.copy()
-    for course in courses:
-        normalized_df.loc[:, course] = (normalized_df.loc[:, course] - stats.loc['mean', course]) / stats.loc['std', course]
-    
-    split_idx = int(0.75 * len(normalized_df.index))
-    train = normalized_df.iloc[:split_idx, :].copy()
-    val = normalized_df.iloc[split_idx:, :].copy()
 
+    split_idx = int(0.75 * len(df.index))
+    train = df.iloc[:split_idx, :].copy()
+    val = df.iloc[split_idx:, :].copy()
 
     if show_hist:
         fig, axes = plt.subplots(ncols=2)
@@ -132,6 +121,12 @@ def test_train_split(df, stats, show_hist=False):
 
     return train, val
 
+def normalize(df, stats):
+    courses = df.columns[1:]
+    normalized_df = df.copy()
+    for course in courses:
+        normalized_df.loc[:, course] = (normalized_df.loc[:, course] - stats.loc['mean', course]) / stats.loc['std', course]
+    return normalized_df
 
 def main():
     if len(sys.argv) != 2:
@@ -149,8 +144,11 @@ def main():
     df.drop(['Index', 'First Name', 'Last Name', 'Birthday'], axis=1, inplace=True)
     df['Best Hand'] = df['Best Hand'].map({'Left':0, 'Right':1})
 
+
     #ignore the target column: all rows and all colums starting from Best Hand
     stats = describe(df.loc[:, 'Best Hand':], should_print=True)
+    normalized_df = normalize(df.loc[:, 'Best Hand':], stats)
+    normalized_stats = describe(normalized_df, should_print=True)
 
     train, val = test_train_split(df, stats, False)
 
@@ -158,6 +156,8 @@ def main():
         os.mkdir('datasets/splitted/')
     train.to_csv('datasets/splitted/train.csv')
     val.to_csv('datasets/splitted/val.csv')
+    stats.to_csv('stats.csv')
+    normalized_stats.to_csv('normalized_stats.csv')
 
 if __name__ == '__main__':
     main()
