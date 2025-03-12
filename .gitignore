@@ -1,4 +1,5 @@
 weights.pkl
-dataset/splitted/
+datasets/splitted/
 house_map.csv
 houses.csv
+__pycache__

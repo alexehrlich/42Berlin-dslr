@@ -28,6 +28,9 @@ def main():
     
     df, model = read_input(sys.argv)
 
+    if df == None or model == None:
+        return
+
     df.drop(['Hogwarts House'], axis=1, inplace=True)
 
     normalized_df = preprocess_data(df)
@@ -38,7 +41,6 @@ def main():
     results = pd.DataFrame(columns=['Hogwarts House'])
     for x in X_test:
         prediction = np.argmax(model.predict(x.reshape(-1, 1)))
-        print(prediction)
         house =  house_map.loc[prediction, 'Hogwarts House']
         results.loc[len(results)] = [house]
     results.to_csv('houses.csv', index_label='Index')

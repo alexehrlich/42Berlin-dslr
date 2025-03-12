@@ -9,7 +9,7 @@ def split(df, save=True, show_hist=False):
     train, val = test_train_split(df, show_hist=show_hist)
 
     house_map = {house: i for i, house in enumerate(train.loc[:, 'Hogwarts House'].unique())}
-    print(house_map)
+    print(f"Mapped Houses: {house_map}\n")
     train.loc[:, 'Hogwarts House'] = train.loc[:, 'Hogwarts House'].map(house_map)
     val.loc[:, 'Hogwarts House'] = val.loc[:, 'Hogwarts House'].map(house_map)
     house_map_df = pd.DataFrame({'Hogwarts House': list(house_map.keys())}, index=list(house_map.values()))
