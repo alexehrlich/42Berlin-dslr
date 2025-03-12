@@ -1,9 +1,11 @@
 from describe import describe
 import pandas as pd
 import matplotlib.pyplot as plt
+from data_utils import preprocess_data
 
 def main():
-	df = pd.read_csv('./datasets/normalized.csv')
+	df = pd.read_csv('./datasets/dataset_train.csv')
+	df = preprocess_data(df)
 	course_df = df.loc[:, 'Best Hand':]
 	house = df.loc[:, 'Hogwarts House']
 	houses_colors = {
