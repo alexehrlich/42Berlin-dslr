@@ -7,6 +7,10 @@ import numpy as np
 
 
 def split(df, ratio=0.75, save=True, show_hist=False):
+
+    if ratio >= 1.0 or ratio < 0.1:
+        print("Waring: Unplausible split ratio. Was set to 0.75 instead.\n")
+        ratio = 0.75
     train, val = test_train_split(df, ratio=ratio, show_hist=show_hist)
 
     house_map = {house: i for i, house in enumerate(train.loc[:, 'Hogwarts House'].unique())}
@@ -47,7 +51,7 @@ def main():
     df.fillna(df.select_dtypes(include=[np.number]).mean(), inplace=True)
     normalized_df = preprocess_data(df)
 
-    X_train, X_val, y_train, y_val = split(normalized_df, ratio=0.90, show_hist=False)
+    X_train, X_val, y_train, y_val = split(normalized_df, ratio=0.8, show_hist=False)
     
     model = LogisticregressionClassifier()
     model.fit(X_train, X_val, y_train, y_val, epochs=100, alpha=0.001)
