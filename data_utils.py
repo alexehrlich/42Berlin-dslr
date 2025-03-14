@@ -41,9 +41,9 @@ def upper_percentile(values):
     sorted = values.sort_values()
     return median(sorted.iloc[(len(values) // 2):], True)
 
-def test_train_split(df, show_hist=False):
+def test_train_split(df, ratio=0.8 ,show_hist=False):
 
-    split_idx = int(0.60 * len(df.index))
+    split_idx = int(ratio * len(df.index))
     train = df.iloc[:split_idx, :].copy()
     val = df.iloc[split_idx:, :].copy()
 

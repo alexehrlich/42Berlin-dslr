@@ -28,11 +28,11 @@ def main():
     
     df, model = read_input(sys.argv)
 
-    if df == None or model == None:
+    if df is None or model is None:
         return
 
     df.drop(['Hogwarts House'], axis=1, inplace=True)
-
+    df.fillna(df.select_dtypes(include=[np.number]).mean(), inplace=True)
     normalized_df = preprocess_data(df)
 
     X_test = normalized_df.loc[:, ['Defense Against the Dark Arts', 'Divination', 'Ancient Runes', 'Charms', 'Flying']].to_numpy()

@@ -3,3 +3,4 @@ datasets/splitted/
 house_map.csv
 houses.csv
 __pycache__
+venv/

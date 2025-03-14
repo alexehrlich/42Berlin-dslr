@@ -27,7 +27,7 @@ class LogisticregressionClassifier:
 		print(f'y_train shape: {y_train.shape}')
 		print(f'y_val shape: {y_val.shape}')
 
-		np.random.seed(42)
+		np.random.seed(41)
 		self.weights = np.random.randn(4, X_train.shape[1])
 
 		for epoch in range(epochs):

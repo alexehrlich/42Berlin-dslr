@@ -3,10 +3,11 @@ import sys
 import os
 from data_utils import test_train_split, preprocess_data, describe
 import pandas as pd
+import numpy as np
 
 
-def split(df, save=True, show_hist=False):
-    train, val = test_train_split(df, show_hist=show_hist)
+def split(df, ratio=0.75, save=True, show_hist=False):
+    train, val = test_train_split(df, ratio=ratio, show_hist=show_hist)
 
     house_map = {house: i for i, house in enumerate(train.loc[:, 'Hogwarts House'].unique())}
     print(f"Mapped Houses: {house_map}\n")
@@ -43,12 +44,13 @@ def main():
     if (df := read_input(sys.argv)) is None:
         return
 
+    df.fillna(df.select_dtypes(include=[np.number]).mean(), inplace=True)
     normalized_df = preprocess_data(df)
 
-    X_train, X_val, y_train, y_val = split(normalized_df, show_hist=False)
+    X_train, X_val, y_train, y_val = split(normalized_df, ratio=0.90, show_hist=False)
     
     model = LogisticregressionClassifier()
-    model.fit(X_train, X_val, y_train, y_val, epochs=20, alpha=0.001)
+    model.fit(X_train, X_val, y_train, y_val, epochs=100, alpha=0.001)
     model.save_model('weights.pkl')
 
 if __name__ == '__main__':

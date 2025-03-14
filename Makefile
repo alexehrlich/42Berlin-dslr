@@ -1,7 +1,7 @@
 all: setup
 
 setup:
-	@virtualenv venv && pip install -r requirements.txt
+	@virtualenv venv && source venv/bin/activate . && pip3 install -r requirements.txt
 
 clean:
 	@rm -rf dataset/splitted
